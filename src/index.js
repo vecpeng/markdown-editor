@@ -1,17 +1,49 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class Container extends React.Component {
+  render() {
+    return(
+      <div className = "container">
+        <UserInput />
+      </div>
+    )
+  }
+}
+class UserInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: ''
+    }
+    this.handleValue = this.handleValue.bind(this)
+  }
+  handleValue(e) {
+    this.setState({
+      value: e.target.value
+    })
+    console.log(this.state.value)
+  }
+  handleKeyDown(e) {
+    if(e.keyCode === 13) {
+      console.log("enter")
+    }
+  }
+  render() {
+    return (
+      <textarea 
+      className = "user-input"
+      name = "userInput"
+      spellCheck = "false"
+      value = {this.state.value}
+      onChange = {this.handleValue}
+      onKeyDown = {this.handleKeyDown}
+      >
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+      </textarea>
+    )
+  }
+}
+
+ReactDOM.render(<Container />, document.getElementById("root"))
