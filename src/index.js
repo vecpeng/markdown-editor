@@ -27,21 +27,18 @@ class UserInput extends React.Component {
   }
   handleKeyDown(e) {
     if(e.keyCode === 13) {
-      console.log("enter")
+      this.setState({
+        value: this.state.value + '\n'
+      })
     }
   }
   render() {
     return (
-      <textarea 
+      <div 
+      contentEditable = "true"
       className = "user-input"
-      name = "userInput"
-      spellCheck = "false"
-      value = {this.state.value}
-      onChange = {this.handleValue}
-      onKeyDown = {this.handleKeyDown}
       >
-
-      </textarea>
+      </div>
     )
   }
 }
