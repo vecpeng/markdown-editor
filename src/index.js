@@ -6,7 +6,7 @@ class Container extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: []
+      value: [],
     }
     this.handleChildInput = this.handleChildInput.bind(this)
   }
@@ -29,13 +29,13 @@ class UserInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: []
+      value: [],
+      unorderedList: false,
+      orderedLIst: false
     }
     this.handleInput = this.handleInput.bind(this)
   }
   handleInput(e) {
-    console.log("ok")
-    console.log(this.props)
     const {handleChildInput} = this.props
     console.log(handleChildInput)
     let userInput = document.getElementById("user-input")
@@ -44,6 +44,17 @@ class UserInput extends React.Component {
     console.log(userInput)
     Array.from(userInput.childNodes).forEach(childNode => {
       if(childNode.nodeName === 'DIV') {
+        if(childNode.textContent.slice(0,2) == '- ') {
+          this.setState({
+            unorderedList: true
+          })
+        } else {
+          if(this.state.unorderedList == true) {
+            childNode.textContent.shift()
+            childNode.textContent.shift()
+            childNode.textContent.unshift('·')
+          }
+        }
         handleInput.push(childNode.textContent)
       }
     })
@@ -52,7 +63,7 @@ class UserInput extends React.Component {
   handleKeyDown(e) {
     if(e.keyCode === 13) {
       this.setState({
-        value: this.state.value + '\n'
+        unorderedList: 
       })
     }
   }
@@ -80,10 +91,7 @@ class UserOutput extends React.Component {
   render() {
     console.log(this.props)
     const output = this.props.value.map((value,index) => {
-      // if(value.slice(0,1) ===  "###") {
-      //   return <h3 key={index}>{value.slice(3)}</h3>
-      // }
-      // return value
+      // handle title
       let num = 0
       for(let i = 0; i < 6; i++) {
         if(value[i] === '#'){
@@ -92,11 +100,15 @@ class UserOutput extends React.Component {
           break
         }
       }
-      const Tag = "h" + num
+      const Tag = `h${num}`
       return <Tag >{value.slice(num)}</Tag>
+      //handle unordered list
+      if(value.slice(0, 2) == '- ') {
+        return `·${value.slice(2)}`
+      }
     })
     return (
-    <div>{output}</div>
+      <div class="output-container">{output}</div>
     )
   }
 }

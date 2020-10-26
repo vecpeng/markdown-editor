@@ -20,3 +20,10 @@
 .textarea-form {
   width: 46vw;
 }
+
+.output-container {
+  border: 1px solid #333;
+  background-color: white;
+  min-height: 70vh;
+  width: 46vw;
+}
