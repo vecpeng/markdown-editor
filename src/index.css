@@ -27,3 +27,7 @@
   min-height: 70vh;
   width: 46vw;
 }
+
+.normal-value {
+  word-wrap: break-word;
+}

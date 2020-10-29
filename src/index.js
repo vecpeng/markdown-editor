@@ -1,115 +1,131 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+/* eslint-disable eqeqeq */
+import React, { createElement } from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
 
 class Container extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       value: [],
-    }
-    this.handleChildInput = this.handleChildInput.bind(this)
+    };
+    this.handleChildInput = this.handleChildInput.bind(this);
   }
   handleChildInput(userInput) {
     this.setState({
-      value: userInput
-    })
-    console.log(userInput)
+      value: userInput,
+    });
+    console.log(userInput);
   }
   render() {
-    return(
-      <div className = "container">
-        <UserInput handleChildInput = {this.handleChildInput}/>
-        <UserOutput value = {this.state.value}/>
+    return (
+      <div className="container">
+        <UserInput handleChildInput={this.handleChildInput} />
+        <UserOutput value={this.state.value} />
       </div>
-    )
+    );
   }
 }
+
 class UserInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       value: [],
       unorderedList: false,
-      orderedLIst: false
-    }
-    this.handleInput = this.handleInput.bind(this)
+      orderedList: false,
+    };
+    this.handleInput = this.handleInput.bind(this);
   }
   handleInput(e) {
-    const {handleChildInput} = this.props
-    console.log(handleChildInput)
-    let userInput = document.getElementById("user-input")
-    console.log(userInput.textContent)
-    let handleInput = [userInput.innerHTML.split("<div>")[0]]
-    console.log(userInput)
-    Array.from(userInput.childNodes).forEach(childNode => {
-      if(childNode.nodeName === 'DIV') {
-        if(childNode.textContent.slice(0,2) == '- ') {
-          this.setState({
-            unorderedList: true
-          })
+    const { handleChildInput } = this.props;
+    let userInput = document.getElementById("user-input");
+    let handleInput = [];
+    let isUnorderedList = false;
+
+    Array.from(userInput.childNodes).forEach((childNode) => {
+      let textContent = childNode.textContent;
+      if (textContent.slice(0, 2) == "- ") {
+        console.log("- ");
+        isUnorderedList = true;
+        handleInput.push(textContent);
+      } else {
+        if (isUnorderedList == true) {
+          console.log("li");
+          handleInput.push(`- ${textContent}`);
         } else {
-          if(this.state.unorderedList == true) {
-            childNode.textContent.shift()
-            childNode.textContent.shift()
-            childNode.textContent.unshift('·')
-          }
+          console.log("noli");
+          handleInput.push(textContent);
         }
-        handleInput.push(childNode.textContent)
       }
-    })
-    handleChildInput(handleInput)
+    });
+    userInput.innerHTML = "";
+    console.log(handleInput);
+    handleInput.forEach((item) => {
+      let itemNode = document.createElement("div");
+      itemNode.textContent = item;
+      userInput.appendChild(itemNode);
+    });
+    let lastNode = document.createElement("span");
+    lastNode.textContent = "fdsfsf";
+    userInput.appendChild(lastNode);
+    window.getSelection().collapse(lastNode, 0);
+
+    userInput.removeChild(lastNode);
+    isUnorderedList = false;
+    handleChildInput(handleInput);
   }
   handleKeyDown(e) {
-    if(e.keyCode === 13) {
-      this.setState({
-        unorderedList: 
-      })
+    if (e.keyCode === 13) {
+      if (this.state.unorderedList === true) {
+      }
     }
   }
   render() {
     return (
-      <div 
-      contentEditable = "true"
-      spellCheck = "false"
-      className = "user-input"
-      id = "user-input"
-      onInput = {this.handleInput}
-      >
-      </div>
-    )
+      <div
+        contentEditable="true"
+        spellCheck="false"
+        className="user-input"
+        id="user-input"
+        onInput={this.handleInput}
+      ></div>
+    );
   }
 }
 
 class UserOutput extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      value: ""
-    }
+      value: "",
+    };
   }
   render() {
-    console.log(this.props)
-    const output = this.props.value.map((value,index) => {
+    console.log(this.props);
+    const output = this.props.value.map((value, index) => {
       // handle title
-      let num = 0
-      for(let i = 0; i < 6; i++) {
-        if(value[i] === '#'){
-          num++
+      let num = 0;
+      for (let i = 0; i < 6; i++) {
+        if (value[i] === "#") {
+          num++;
         } else {
-          break
+          break;
         }
       }
-      const Tag = `h${num}`
-      return <Tag >{value.slice(num)}</Tag>
-      //handle unordered list
-      if(value.slice(0, 2) == '- ') {
-        return `·${value.slice(2)}`
+      if (value[0] === "#") {
+        const Tag = `h${num}`;
+        return <Tag>{value.slice(num)}</Tag>;
       }
-    })
-    return (
-      <div class="output-container">{output}</div>
-    )
+
+      //handle unordered list
+      if (value.slice(0, 2) == "- ") {
+        return <li>{value.slice(2)}</li>;
+      }
+
+      return <div className="normal-value">{value}</div>;
+    });
+    return <div className="output-container">{output}</div>;
   }
 }
-ReactDOM.render(<Container />, document.getElementById("root"))
+ReactDOM.render(<Container />, document.getElementById("root"));
